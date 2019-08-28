@@ -1,3 +1,4 @@
+import {serverRoute} from './menu.js'
 
 const tokens = {
   admin: {
@@ -23,13 +24,14 @@ const users = {
   }
 }
 
+
 export default [
   // user login
   {
     url: '/user/login',
     type: 'post',
     response: config => {
-      const { username } = config.body
+      const {username} = config.body
       const token = tokens[username]
 
       // mock error
@@ -52,7 +54,7 @@ export default [
     url: '/user/info\.*',
     type: 'get',
     response: config => {
-      const { token } = config.query
+      const {token} = config.query
       const info = users[token]
 
       // mock error
@@ -78,6 +80,16 @@ export default [
       return {
         code: 20000,
         data: 'success'
+      }
+    }
+  },
+  {
+    url: '/user/menu',
+    type: 'get',
+    response: _ => {
+      return {
+        code: 20000,
+        data: serverRoute
       }
     }
   }

@@ -1,4 +1,8 @@
-import { asyncRoutes, constantRoutes } from '@/router'
+import {asyncRoutes, constantRoutes} from '@/router'
+import {getMenu} from '../../api/user'
+import {deepClone} from '../../utils/index'
+
+const clientRoutes = deepClone(asyncRoutes)
 
 /**
  * Use meta.role to determine if the current user has permission
@@ -22,7 +26,7 @@ export function filterAsyncRoutes(routes, roles) {
   const res = []
 
   routes.forEach(route => {
-    const tmp = { ...route }
+    const tmp = {...route}
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, roles)
@@ -46,14 +50,51 @@ const mutations = {
   }
 }
 
+/**
+ *
+ * @param {arr} clientAsyncRoutes 前端保存动态路由
+ * @param {arr} serverRouter 后端保存动态路由
+ */
+function makePermissionRouters(serverRouter, clientAsyncRoutes) {
+  clientAsyncRoutes.map(ele => {
+    if (!ele.name || (!ele.meta && !ele.meta.roles)) return
+    let roles_obj
+    for (let i = 0; i < serverRouter.length; i++) {
+      const element = serverRouter[i]
+      if (ele.name === element.name) {
+        roles_obj = element
+      }
+    }
+    ele.meta.roles = roles_obj.meta.roles
+
+    if (ele.children) {
+      // Here must be roles_obj.children instead of serverRouters.
+      makePermissionRouters(roles_obj.children, ele.children)
+    }
+  })
+  return clientAsyncRoutes
+}
+
 const actions = {
-  generateRoutes({ commit }, roles) {
+  async generateRoutes({commit}, roles) {
+    let permissionRouters = await getMenu().then(
+      res => {
+        console.log(res)
+        const data = res.data
+        console.log(data)
+        permissionRouters = makePermissionRouters(data, clientRoutes)
+        return permissionRouters
+      }
+    )
+    console.table(permissionRouters)
+
     return new Promise(resolve => {
       let accessedRoutes
       if (roles.includes('admin')) {
-        accessedRoutes = asyncRoutes || []
+        console.log(permissionRouters)
+        accessedRoutes = permissionRouters || []
       } else {
-        accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
+        accessedRoutes = filterAsyncRoutes(permissionRouters, roles)
       }
       commit('SET_ROUTES', accessedRoutes)
       resolve(accessedRoutes)

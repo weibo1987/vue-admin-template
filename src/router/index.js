@@ -148,19 +148,23 @@ export const asyncRoutes = [
       },
       {
         path: 'menu2',
+        name: 'menu2',
         component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        meta: { title: 'Menu2' }
       }
     ]
   },
 
   {
     path: 'external-link',
+    name: 'External Link',
     component: Layout,
+    meta: { title: 'External Link', name: 'External Link', icon: 'link' },
     children: [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        name: 'External Link',
+        meta: { title: 'External Link',  icon: 'link' }
       }
     ]
   },
