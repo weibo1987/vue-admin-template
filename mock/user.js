@@ -1,3 +1,4 @@
+// 这里必须加大括号 否则 引用不到变量.
 import {serverRoute} from './menu.js'
 
 const tokens = {
