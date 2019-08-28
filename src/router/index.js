@@ -164,7 +164,7 @@ export const asyncRoutes = [
       {
         path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
         name: 'External Link',
-        meta: { title: 'External Link',  icon: 'link' }
+        meta: { title: 'External Link', icon: 'link' }
       }
     ]
   },

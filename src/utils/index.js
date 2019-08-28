@@ -109,8 +109,6 @@ export function param2Obj(url) {
   )
 }
 
-
-
 /**
  * This is just a simple version of deep copy
  * Has a lot of edge cases bug

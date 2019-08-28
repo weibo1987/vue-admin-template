@@ -1,6 +1,6 @@
-import {asyncRoutes, constantRoutes} from '@/router'
-import {getMenu} from '../../api/user'
-import {deepClone} from '../../utils/index'
+import { asyncRoutes, constantRoutes } from '@/router'
+import { getMenu } from '../../api/user'
+import { deepClone } from '../../utils/index'
 
 const clientRoutes = deepClone(asyncRoutes)
 
@@ -26,7 +26,7 @@ export function filterAsyncRoutes(routes, roles) {
   const res = []
 
   routes.forEach(route => {
-    const tmp = {...route}
+    const tmp = { ...route }
     if (hasPermission(roles, tmp)) {
       if (tmp.children) {
         tmp.children = filterAsyncRoutes(tmp.children, roles)
@@ -76,7 +76,7 @@ function makePermissionRouters(serverRouter, clientAsyncRoutes) {
 }
 
 const actions = {
-  async generateRoutes({commit}, roles) {
+  async generateRoutes({ commit }, roles) {
     let permissionRouters = await getMenu().then(
       res => {
         console.log(res)
